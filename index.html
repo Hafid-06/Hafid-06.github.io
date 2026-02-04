@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Portfolio</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. CONFIGURATION GÉNÉRALE & COULEURS --- */
+        :root {
+            --bg-color: #0f172a;       /* Fond principal (Bleu nuit sombre) */
+            --card-bg: #1e293b;        /* Fond des cartes */
+            --primary: #38bdf8;        /* Couleur d'accentuation (Bleu clair) */
+            --text-main: #f1f5f9;      /* Texte blanc cassé */
+            --text-secondary: #94a3b8; /* Texte gris bleuté */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth; /* Défilement fluide quand on clique sur le menu */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden; /* Évite le scroll horizontal involontaire */
+        }
+
+        /* --- 2. ANIMATION "SCROLL REVEAL" --- */
+        /* État de départ (caché et décalé vers le bas) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px); /* Descend l'élément de 50px */
+            transition: all 0.8s ease-out; /* Durée de l'effet */
+        }
+
+        /* État final (visible et à sa place) */
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- 3. NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.90); /* Fond semi-transparent */
+            backdrop-filter: blur(10px);        /* Effet de flou derrière */
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* --- 4. HERO SECTION (En-tête) --- */
+        .hero {
+            height: 100vh; /* Prend toute la hauteur de l'écran */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .hero h2 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace; /* Style "Code" */
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; /* Texte dégradé */
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #0f172a;
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2);
+        }
+
+        /* --- 5. SECTIONS GÉNÉRALES --- */
+        section {
+            padding: 6rem 10%; /* Espacement interne */
+        }
+
+        section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Petit trait bleu sous les titres */
+        section h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--primary);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        /* --- 6. CARTES (Études & Expérience) --- */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px); /* Monte légèrement au survol */
+            border-color: var(--primary);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .date {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-family: monospace;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card h4 {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        /* --- 7. COMPÉTENCES (Grille) --- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive auto */
+            gap: 2rem;
+        }
+
+        .skill-category {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .skill-category h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .tag {
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+            cursor: default;
+        }
+
+        .tag:hover {
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--primary);
+        }
+
+        /* --- 8. FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: #0b1120;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 4rem;
+        }
+
+        .social-links {
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links a {
+            color: var(--text-main);
+            font-size: 1.8rem;
+            margin: 0 1rem;
+            transition: color 0.3s, transform 0.3s;
+            display: inline-block;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; } /* Pour simplifier l'exemple mobile */
+            section { padding: 4rem 5%; }
+            .card-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        }
+
+        /* --- ANIMATION FLÈCHE DE DÉFILEMENT --- */
+
+        .scroll-indicator {
+            position: absolute; /* On la place par rapport à la section Hero */
+            bottom: 30px;       /* À 30px du bas de l'écran */
+            left: 50%;          /* Centré horizontalement */
+            transform: translateX(-50%); /* Correction du centrage exact */
+            z-index: 10;
+        }
+
+        .scroll-indicator a {
+            color: var(--text-secondary);
+            font-size: 2rem;    /* Taille de la flèche */
+            text-decoration: none;
+            transition: color 0.3s;
+            
+            /* On attache l'animation définie plus bas */
+            animation: bounce 2s infinite; 
+        }
+
+        .scroll-indicator a:hover {
+            color: var(--primary); /* Devient bleu au survol */
+        }
+
+        /* Définition du mouvement de rebond */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px); /* Monte de 10px */
+            }
+            60% {
+                transform: translateY(-5px);  /* Monte de 5px */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Portfolio.</div>
+        <ul class="nav-links">
+            <li><a href="#about">À propos</a></li>
+            <li><a href="#education">Parcours</a></li>
+            <li><a href="#experience">Expérience</a></li>
+            <li><a href="#skills">Compétences</a></li>
+            <li>
+            <a href="CV.pdf" target="_blank" style="color: var(--primary); border: 1px solid var(--primary); padding: 5px 15px; border-radius: 20px; transition: all 0.3s;">
+                CV <i class="fas fa-file-pdf"></i>
+            </a>
+        </li>
+        </ul>
+    </nav>
+
+    <section class="hero reveal">
+        <div style="
+            background: rgba(56, 189, 248, 0.1); 
+            border: 1px solid var(--primary); 
+            color: var(--primary); 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            margin-bottom: 1.5rem; 
+            display: inline-block;">
+            🟢 Recherche Alternance M2 - Sept. 2026
+        </div>
+        <h2>Hello World !</h2>
+        <h1>Bienvenue sur mon Portfolio !</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+        Étudiant en Master 1 Informatique passionné par le <strong>Développement Web</strong>.
+        <br>
+        Je développe des projets académiques et personnels pour perfectionner mes compétences techniques.
+        </p>
+        <div class="btn-group">
+            <a href="#contact" class="btn btn-primary">Me contacter</a>
+            <a href="https://github.com" target="_blank" class="btn btn-outline"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+        <div class="scroll-indicator">
+        <a href="#about"> <i class="fas fa-chevron-down"></i>
+        </a>
+    </div>
+    </section>
+
+    <section id="about" class="reveal">
+        <h2>Qui suis-je ?</h2>
+        <div class="timeline"> <div class="card" style="text-align: center;">
+                <p>Je m'appelle <strong>Abdelhafid El Jaghaoui</strong>. Je suis étudiant en informatique actuellement en Master 1 à Université Côte d'Azur.</p>
+                <br>
+                <p>Passionné par le développement, j'aime comprendre comment les choses fonctionnent. Que ce soit pour concevoir une architecture backend, structurer une base de données ou créer une interface utilisateur fluide, je m'investis à 100%.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="education">
+        <h2 class="reveal">Mon Parcours</h2>
+        <div class="timeline">
+            <div class="card reveal">
+                <div class="card-header">
+                    <h3>Master 1 Informatique</h3>
+                    <span class="date">2025 - 2026</span>
+                </div>
+                <h4>Université Côte d'Azur</h4>
+                <p>Formation initiale.</p>
+            </div>
+
+            <div class="card reveal">
+                <div class="card-header">
+                    <h3>Licence Informatique</h3>
+                    <span class="date">2022 - 2025</span>
+                </div>
+                <h4>Université Côte d'Azur</h4>
+                <p>Apprentissage des bases du développement.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <h2 class="reveal">Mes Réalisations</h2>
+            <div class="timeline">
+                <div class="card reveal">
+                    <div class="card-header">
+                        <h3>Pac-Man : Jeu & IA</h3>
+                        <span class="date">Projet Académique (TER) Master - 2025</span>
+                    </div>
+                    <h4 style="color: var(--primary);">Python • IA (Minimax & A*) • Algorithmique</h4>
+                    <p>Développement d'un moteur de jeu hybride. Offre un mode <strong>manuel</strong> (jouable au clavier) et un mode <strong>autonome</strong> où l'IA prend le relais. Implémentation d'algorithmes de pathfinding (A*) et de décision (Minimax) pour optimiser les déplacements en temps réel.</p>
+                </div>
+                
+
+                <div class="card reveal">
+                    <div class="card-header">
+                        <h3>Sampler & Dashboard</h3>
+                        <span class="date">Projet Académique Master - 2025</span>
+                    </div>
+                    <h4 style="color: var(--primary);">Angular • RxJS • Web Audio API</h4>
+                    <p>Développement d'une suite musicale complète. Architecture moderne (Standalone Components, RxJS) couplée à un traitement du signal avancé et une visualisation en temps réel via Canvas.</p>
+                </div>
+
+                <div class="card reveal">
+                    <div class="card-header">
+                        <h3>Jeu de Plateforme</h3>
+                        <span class="date">Projet Académique Licence - 2024</span>
+                    </div>
+                    <h4 style="color: var(--primary);">Java • POO • Design Patterns</h4>
+                    <p>Développement d'un jeu axé sur la programmation modulaire et l'Orienté Objet. Application stricte de Design Patterns pour garantir une structure de code organisée et maintenable.</p>
+                </div>
+            </div>
+    </section>
+
+    <section id="skills">
+        <h2 class="reveal">Mes Compétences</h2>
+        <div class="skills-grid">
+            
+            <div class="skill-category reveal">
+                <h3><i class="fas fa-cogs"></i> Backend & Logiciel</h3>
+                <div class="tags">
+                    <span class="tag">Java</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">POO / Design Patterns</span>
+                    <span class="tag">SQL (MySQL)</span>
+                    <span class="tag">Algorithmique</span>
+                </div>
+            </div>
+
+            <div class="skill-category reveal">
+                <h3><i class="fas fa-code"></i> Développement Web</h3>
+                <div class="tags">
+                    <span class="tag">Angular</span>
+                    <span class="tag">TypeScript</span>
+                    <span class="tag">JavaScript (ES6+)</span>
+                    <span class="tag">HTML5 / CSS3</span>
+                    <span class="tag">PHP</span>
+                </div>
+            </div>
+
+            <div class="skill-category reveal">
+                <h3><i class="fas fa-server"></i> Outils & Environnement</h3>
+                <div class="tags">
+                    <span class="tag">Git / GitHub</span>
+                    <span class="tag">Linux / Bash</span>
+                    <span class="tag">Docker</span>
+                    <span class="tag">IntelliJ / VS Code</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer id="contact" class="reveal">
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/abdelhafid-el-jaghaoui-1b78a3389/" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/Hafid-06" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="mailto:hafid.eljaghaoui@gmail.com"><i class="fas fa-envelope"></i></a>
+        </div>
+        <p>Prêt à collaborer ? N'hésitez pas à me contacter pour discuter d'opportunités professionnelles.</p>
+        <p style="margin-top: 1rem; opacity: 0.5; font-size: 0.8rem;">© 2026 Conçu et développé par Abdelhafid</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Sélectionne tous les éléments avec la classe "reveal"
+            const reveals = document.querySelectorAll(".reveal");
+
+            // Configuration de l'observateur
+            // threshold: 0.15 signifie que l'anim se lance quand 15% de l'élément est visible
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        // Ajoute la classe .active qui remet l'opacité à 1 et la position à 0
+                        entry.target.classList.add("active");
+                        // On arrête d'observer pour que l'anim ne se joue qu'une fois
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.15
+            });
+
+            // Applique l'observateur sur chaque élément
+            reveals.forEach((element) => {
+                observer.observe(element);
+            });
+        });
+    </script>
+
+</body>
+</html>
