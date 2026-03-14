@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Portfolio</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-secondary: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; position: relative; }
+
+        .bg-ambient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: var(--bg-color); }
+        .blob { position: absolute; width: 500px; height: 500px; background: rgba(56, 189, 248, 0.15); filter: blur(80px); border-radius: 50%; z-index: -1; animation: move 20s infinite alternate ease-in-out; }
+        .blob-1 { top: -10%; left: -10%; background: rgba(56, 189, 248, 0.2); }
+        .blob-2 { bottom: -10%; right: -10%; background: rgba(110, 231, 247, 0.15); animation-delay: -5s; }
+        .blob-3 { top: 40%; left: 30%; background: rgba(59, 158, 255, 0.1); animation-delay: -10s; }
+        @keyframes move { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(80px, 40px) scale(1.1); } }
+
+        .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.03; z-index: 100; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
+
+        nav { position: fixed; top: 0; width: 100%; background: transparent; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: all 0.4s ease; }
+        nav.scrolled { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0.8rem 5%; }
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* ===== LANG TOGGLE ===== */
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .lang-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+            min-width: 28px;
+            transition: color 0.3s;
+        }
+        .toggle-track {
+            width: 44px;
+            height: 24px;
+            background: #2a3a52;
+            border-radius: 12px;
+            position: relative;
+            transition: background 0.3s;
+            border: 1px solid rgba(56,189,248,0.3);
+        }
+        .toggle-track.active {
+            background: #1e3a5f;
+            border-color: var(--primary);
+        }
+        .toggle-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 6px rgba(56,189,248,0.5);
+        }
+        .toggle-track.active .toggle-thumb {
+            transform: translateX(20px);
+        }
+
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 1rem; }
+        .hero h2 { font-size: 1.2rem; color: var(--primary); margin-bottom: 1rem; font-family: 'Courier New', monospace; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 1.5rem; background: linear-gradient(to right, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .typewriter { color: var(--primary); font-weight: 600; border-right: 3px solid var(--primary); padding-right: 5px; }
+
+        @keyframes wave { 0% { transform: rotate(0deg); } 10% { transform: rotate(14deg); } 20% { transform: rotate(-8deg); } 30% { transform: rotate(14deg); } 40% { transform: rotate(-4deg); } 50% { transform: rotate(10deg); } 60% { transform: rotate(0deg); } 100% { transform: rotate(0deg); } }
+        .wave { display: inline-block; transform-origin: 70% 70%; animation: wave 2s infinite; font-style: normal; }
+
+        .btn-group { display: flex; gap: 1rem; }
+        .btn { padding: 0.8rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: #0f172a; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2); }
+
+        section { padding: 6rem 10%; }
+        section h2 { font-size: 2.2rem; margin-bottom: 4rem; text-align: center; position: relative; }
+        section h2::after { content: ''; display: block; width: 60px; height: 4px; background: var(--primary); margin: 15px auto 0; border-radius: 2px; }
+
+        .timeline { display: flex; flex-direction: column; gap: 2rem; max-width: 800px; margin: 0 auto; }
+        .card { background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+        .date { font-size: 0.85rem; color: var(--primary); font-family: monospace; background: rgba(56, 189, 248, 0.1); padding: 0.3rem 0.8rem; border-radius: 4px; }
+
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .skill-category { background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .tags { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+        .tag { background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; transition: 0.3s; }
+        .tag:hover { background: rgba(56, 189, 248, 0.2); color: var(--primary); }
+
+        footer { text-align: center; padding: 4rem 2rem; background: #0b1120; color: var(--text-secondary); margin-top: 4rem; }
+        .social-links a { color: var(--text-main); font-size: 1.8rem; margin: 0 1rem; transition: 0.3s; display: inline-block; }
+        .social-links a:hover { color: var(--primary); transform: translateY(-3px); }
+
+        .scroll-indicator { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+
+        /* ===== TECH BANNER ===== */
+        .tech-banner {
+            width: 100%;
+            padding: 2.5rem 0;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(180deg, transparent, rgba(56,189,248,0.03) 50%, transparent);
+            border-top: 1px solid rgba(56,189,248,0.08);
+            border-bottom: 1px solid rgba(56,189,248,0.08);
+        }
+        .tech-banner::before,
+        .tech-banner::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 120px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .tech-banner::before {
+            left: 0;
+            background: linear-gradient(to right, var(--bg-color), transparent);
+        }
+        .tech-banner::after {
+            right: 0;
+            background: linear-gradient(to left, var(--bg-color), transparent);
+        }
+        .tech-track {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            width: max-content;
+            animation: scrollTrack 35s linear infinite;
+        }
+        .tech-track:hover { animation-play-state: paused; }
+        @keyframes scrollTrack {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem;
+            min-width: 90px;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            cursor: default;
+        }
+        .tech-item:hover {
+            border-color: rgba(56,189,248,0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(56,189,248,0.1);
+        }
+        .tech-item img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+        .tech-item span {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; z-index: 1001; }
+        .burger span { display: block; width: 25px; height: 2px; background: var(--text-main); border-radius: 2px; transition: all 0.3s ease; }
+        .burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .burger.open span:nth-child(2) { opacity: 0; }
+        .burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .burger { display: flex; }
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(15, 23, 42, 0.97); backdrop-filter: blur(12px); padding: 1.5rem 2rem; gap: 1.2rem; border-bottom: 1px solid rgba(56,189,248,0.15); }
+            .nav-links.open { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-ambient">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="noise"></div>
+
+    <nav id="navbar">
+        <div class="logo">Portfolio.</div>
+        <button class="burger" id="burger" onclick="toggleMenu()" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#about" onclick="closeMenu()" data-fr="À propos" data-en="About">À propos</a></li>
+            <li><a href="#education" onclick="closeMenu()" data-fr="Parcours" data-en="Education">Parcours</a></li>
+            <li><a href="#experience" onclick="closeMenu()" data-fr="Expérience" data-en="Experience">Expérience</a></li>
+            <li><a href="#skills" onclick="closeMenu()" data-fr="Compétences" data-en="Skills">Compétences</a></li>
+            <li><a href="#" onclick="closeMenu(); openCV(); return false;" style="color: var(--primary); border: 1px solid var(--primary); padding: 5px 15px; border-radius: 20px;">CV <i class="fas fa-file-pdf"></i></a></li>
+            <li>
+                <div class="lang-toggle" onclick="toggleLang()">
+                    <div class="toggle-track" id="toggle-track">
+                        <div class="toggle-thumb"></div>
+                    </div>
+                    <span class="lang-label" id="lang-label">FR</span>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- CV Fullscreen Overlay -->
+    <div id="cv-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; flex-direction:column;">
+        <div style="display:flex; justify-content:flex-end; align-items:center; padding:10px 16px; background:#0f172a; border-bottom:1px solid rgba(56,189,248,0.2);">
+            <a href="CV.pdf" download style="color:var(--primary); text-decoration:none; margin-right:1.5rem; font-size:0.9rem;"><i class="fas fa-download"></i> <span data-fr="Télécharger" data-en="Download">Télécharger</span></a>
+            <button onclick="closeCV()" style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:#fff; padding:6px 16px; border-radius:20px; cursor:pointer; font-size:0.9rem; transition:0.2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)'"><i class="fas fa-times"></i> <span data-fr="Fermer" data-en="Close">Fermer</span></button>
+        </div>
+        <iframe src="CV.pdf" style="flex:1; width:100%; border:none;"></iframe>
+    </div>
+
+    <section class="hero reveal">
+        <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; margin-bottom: 1.5rem; display: inline-block;">
+            <span data-fr="💼 Recherche Alternance Développeur Full Stack pour mon Master 2 - Sept. 2026" data-en="💼 Looking for a Work-Study Contract (Full Stack Developer) – Master 2 – Sept. 2026">💼 Recherche Alternance Développeur Full Stack pour mon Master 2 - Sept. 2026</span>
+        </div>
+        <h2 style="font-size: 36px;"><span data-fr="Bonjour !" data-en="Hello!">Bonjour !</span> <span class="wave">👋</span></h2>
+        <h1><span data-fr="Bienvenue sur mon Portfolio !" data-en="Welcome to my Portfolio!">Bienvenue sur mon Portfolio !</span></h1>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+            <span data-fr="Je suis" data-en="I am">Je suis</span> <span id="typewriter" class="typewriter"></span>
+        </p>
+        <div class="btn-group">
+            <a href="#contact" class="btn btn-primary" data-fr="Me contacter" data-en="Contact me">Me contacter</a>
+        </div>
+        <div class="scroll-indicator"><a href="#about"><i class="fas fa-chevron-down"></i></a></div>
+    </section>
+
+    <section id="about" class="reveal">
+        <h2><span data-fr="Qui suis-je ?" data-en="Who am I?">Qui suis-je ?</span></h2>
+        <div class="timeline">
+            <div class="card" style="text-align: center;">
+                <img src="image.jpeg" style="width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); box-shadow: 0 0 30px rgba(56, 189, 248, 0.3); margin: 0 auto 1.5rem auto; display: block;">
+                <p><span data-fr="Je m'appelle" data-en="My name is">Je m'appelle</span> <strong>Abdelhafid El Jaghaoui</strong>. <span data-fr="Je suis étudiant en informatique actuellement en Master 1 à Université Côte d'Azur." data-en="I am a computer science student currently in Master 1 at Université Côte d'Azur.">Je suis étudiant en informatique actuellement en Master 1 à Université Côte d'Azur.</span></p>
+                <br>
+                <p><span data-fr="Passionné par le développement, j'aime comprendre comment les choses fonctionnent. Que ce soit pour concevoir une architecture backend, structurer une base de données ou créer une interface utilisateur fluide, je m'investis à 100%." data-en="Passionate about development, I love understanding how things work. Whether it's designing a backend architecture, structuring a database or creating a smooth user interface, I give 100%.">Passionné par le développement, j'aime comprendre comment les choses fonctionnent. Que ce soit pour concevoir une architecture backend, structurer une base de données ou créer une interface utilisateur fluide, je m'investis à 100%.</span></p>
+                <br>
+                <p style="border-left: 3px solid var(--primary); padding-left: 1rem; text-align: left; color: var(--text-secondary);"><span data-fr="Je suis actuellement à la recherche d'une alternance en développement web Full Stack pour mon Master 2, à partir de septembre 2026, sur Nice et ses alentours. Le rythme envisagé est de 3 jours à l'université et 2 jours en entreprise. Motivé, rigoureux et prêt à m'investir pleinement, je cherche une entreprise où je pourrai contribuer à de vrais projets tout en continuant à progresser." data-en="I am currently looking for a work-study contract in Full Stack web development for my Master 2, starting September 2026, in Nice and its surrounding area. The expected schedule is 3 days at university and 2 days in the company. Motivated, rigorous and ready to commit fully, I am looking for a company where I can contribute to real projects while continuing to grow.">🎯 Je suis actuellement à la recherche d'une alternance en développement web Full Stack pour mon Master 2, à partir de septembre 2026, sur Nice et ses alentours. Le rythme envisagé est de 3 jours à l'université et 2 jours en entreprise. Motivé, rigoureux et prêt à m'investir pleinement, je cherche une entreprise ambitieuse où je pourrai contribuer à de vrais projets tout en continuant à progresser.</span></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="education">
+        <h2 class="reveal"><span data-fr="Mon Parcours" data-en="My Education">Mon Parcours</span></h2>
+        <div class="timeline">
+            <div class="card reveal">
+                <div class="card-header"><h3><span data-fr="Master 1 Informatique" data-en="Master 1 Computer Science">Master 1 Informatique</span></h3><span class="date">2025 - 2026</span></div>
+                <h4>Université Côte d'Azur</h4>
+                <p><span data-fr="Formation initiale." data-en="Initial training.">Formation initiale.</span></p>
+            </div>
+            <div class="card reveal">
+                <div class="card-header"><h3><span data-fr="Licence Informatique" data-en="Bachelor's in Computer Science">Licence Informatique</span></h3><span class="date">2022 - 2025</span></div>
+                <h4>Université Côte d'Azur</h4>
+                <p><span data-fr="Apprentissage des bases du développement." data-en="Learning the fundamentals of development.">Apprentissage des bases du développement.</span></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <h2 class="reveal"><span data-fr="Mes Réalisations" data-en="My Projects">Mes Réalisations</span></h2>
+        <div class="timeline">
+
+            <div class="card reveal">
+                <div class="card-header">
+                    <h3>Pac-Man : <span data-fr="Jeu & IA" data-en="Game & AI">Jeu & IA</span></h3>
+                    <span class="date"><span data-fr="Projet Académique (TER) Master - 2025" data-en="Academic Project (TER) Master - 2025">Projet Académique (TER) Master - 2025</span></span>
+                </div>
+                <h4 style="color: var(--primary);">Python • IA (Minimax & A*) • Algorithmique</h4>
+                <p><span data-fr="Développement d'un moteur de jeu hybride. Offre un mode manuel (jouable au clavier) et un mode autonome où l'IA prend le relais. Implémentation d'algorithmes de pathfinding (A*) et de décision (Minimax) pour optimiser les déplacements en temps réel." data-en="Development of a hybrid game engine. Offers a manual mode (keyboard-playable) and an autonomous mode where the AI takes over. Implementation of pathfinding (A*) and decision-making (Minimax) algorithms to optimize movements in real time.">Développement d'un moteur de jeu hybride. Offre un mode <strong>manuel</strong> (jouable au clavier) et un mode <strong>autonome</strong> où l'IA prend le relais. Implémentation d'algorithmes de pathfinding (A*) et de décision (Minimax) pour optimiser les déplacements en temps réel.</span></p>
+            </div>
+
+            <div class="card reveal">
+                <div class="card-header">
+                    <h3><span data-fr="Système d'Authentification Distribué" data-en="Distributed Authentication System">Système d'Authentification Distribué</span></h3>
+                    <span class="date"><span data-fr="Projet Académique Master - 2025" data-en="Academic Project Master - 2025">Projet Académique Master - 2025</span></span>
+                </div>
+                <h4 style="color: var(--primary);">Java • Spring Boot • RabbitMQ • BCrypt • REST API</h4>
+                <p><span data-fr="Architecture orientée événements avec flux d'inscription asynchrone via messagerie (RabbitMQ). Gestion sécurisée des identités : hashage BCrypt, séparation des responsabilités, bonnes pratiques de sécurité. Mise en place de mécanismes de résilience (Dead Letter Queue) et communication inter-services." data-en="Event-driven architecture with asynchronous registration flow via messaging (RabbitMQ). Secure identity management: BCrypt hashing, separation of concerns, security best practices. Implementation of resilience mechanisms (Dead Letter Queue) and inter-service communication.">Architecture orientée événements avec flux d'inscription asynchrone via messagerie (RabbitMQ). Gestion sécurisée des identités : hashage BCrypt, séparation des responsabilités, bonnes pratiques de sécurité. Mise en place de mécanismes de résilience (Dead Letter Queue) et communication inter-services.</span></p>
+            </div>
+
+            <div class="card reveal">
+                <div class="card-header">
+                    <h3><span data-fr="Sampler & Dashboard Musical" data-en="Music Sampler & Dashboard">Sampler & Dashboard Musical</span></h3>
+                    <span class="date"><span data-fr="Projet Académique Master - 2025" data-en="Academic Project Master - 2025">Projet Académique Master - 2025</span></span>
+                </div>
+                <h4 style="color: var(--primary);">Angular • RxJS • Web Audio API</h4>
+                <p><span data-fr="Développement d'une suite musicale complète. Architecture moderne (Standalone Components, RxJS) couplée à un traitement du signal avancé et une visualisation en temps réel via Canvas." data-en="Development of a complete music suite. Modern architecture (Standalone Components, RxJS) combined with advanced signal processing and real-time visualization via Canvas.">Développement d'une suite musicale complète. Architecture moderne (Standalone Components, RxJS) couplée à un traitement du signal avancé et une visualisation en temps réel via Canvas.</span></p>
+            </div>
+
+            <div class="card reveal">
+                <div class="card-header">
+                    <h3><span data-fr="Développement de Jeux en Ligne (Terra Numerica)" data-en="Online Games Development (Terra Numerica)">Développement de Jeux en Ligne (Terra Numerica)</span></h3>
+                    <span class="date" style="background: rgba(56,189,248,0.2); border: 1px solid var(--primary);"><span data-fr="En cours — Projet EUR DS4H – Laboratoire INRIA" data-en="Ongoing — EUR DS4H Project – INRIA Lab">En cours — Projet EUR DS4H – Laboratoire INRIA</span></span>
+                </div>
+                <h4 style="color: var(--primary);">TypeScript • ThreeJS • Web</h4>
+                <p><span data-fr="Migration et portage de jeux pédagogiques vers TypeScript avec intégration de la bibliothèque graphique ThreeJS. Développement de nouvelles fonctionnalités et mécaniques de jeu basées sur les travaux de recherche des scientifiques de Terra Numerica. Application des principes de rigueur scientifique et de résolution de problèmes complexes dans un environnement de recherche." data-en="Migration and porting of educational games to TypeScript with integration of the ThreeJS graphics library. Development of new features and game mechanics based on the research work of Terra Numerica scientists. Application of scientific rigor and complex problem-solving principles in a research environment.">Migration et portage de jeux pédagogiques vers TypeScript avec intégration de la bibliothèque graphique ThreeJS. Développement de nouvelles fonctionnalités et mécaniques de jeu basées sur les travaux de recherche des scientifiques de Terra Numerica. Application des principes de rigueur scientifique et de résolution de problèmes complexes dans un environnement de recherche.</span></p>
+            </div>
+
+            <div class="card reveal">
+                <div class="card-header">
+                    <h3><span data-fr="Jeu de Plateforme" data-en="Platform Game">Jeu de Plateforme</span></h3>
+                    <span class="date"><span data-fr="Projet Académique Licence - 2024" data-en="Academic Project Bachelor - 2024">Projet Académique Licence - 2024</span></span>
+                </div>
+                <h4 style="color: var(--primary);">Java • POO • Design Patterns</h4>
+                <p><span data-fr="Développement d'un jeu axé sur la programmation modulaire et l'Orienté Objet. Application stricte de Design Patterns pour garantir une structure de code organisée et maintenable." data-en="Development of a game focused on modular programming and OOP. Strict application of Design Patterns to ensure an organized and maintainable code structure.">Développement d'un jeu axé sur la programmation modulaire et l'Orienté Objet. Application stricte de Design Patterns pour garantir une structure de code organisée et maintenable.</span></p>
+            </div>
+
+            <div class="card reveal">
+                <div class="card-header">
+                    <h3><span data-fr="Mini-Compilateur C" data-en="Mini C Compiler">Mini-Compilateur C</span></h3>
+                    <span class="date"><span data-fr="Projet Académique Licence - 2024" data-en="Academic Project Bachelor - 2024">Projet Académique Licence - 2024</span></span>
+                </div>
+                <h4 style="color: var(--primary);">C • Lex • Yacc</h4>
+                <p><span data-fr="Conception d'un mini-compilateur couvrant l'analyse lexicale, syntaxique et la génération de code intermédiaire." data-en="Design of a mini-compiler covering lexical analysis, syntax analysis and intermediate code generation.">Conception d'un mini-compilateur couvrant l'analyse lexicale, syntaxique et la génération de code intermédiaire.</span></p>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="skills">
+        <h2 class="reveal"><span data-fr="Mes Compétences" data-en="My Skills">Mes Compétences</span></h2>
+        <div class="skills-grid">
+            <div class="skill-category reveal">
+                <h3><i class="fas fa-cogs"></i> <span data-fr="Backend & Logiciel" data-en="Backend & Software">Backend & Logiciel</span></h3>
+                <div class="tags">
+                    <span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">Python</span><span class="tag">POO / Design Patterns</span><span class="tag">C</span><span class="tag">SQL (MySQL)</span><span class="tag">MongoDB</span><span class="tag">Algorithmique</span><span class="tag">RabbitMQ</span>
+                </div>
+            </div>
+            <div class="skill-category reveal">
+                <h3><i class="fas fa-code"></i> <span data-fr="Développement Web" data-en="Web Development">Développement Web</span></h3>
+                <div class="tags">
+                    <span class="tag">Angular</span><span class="tag">TypeScript</span><span class="tag">JavaScript (ES6+)</span><span class="tag">ThreeJS</span><span class="tag">HTML5 / CSS3</span><span class="tag">PHP</span>
+                </div>
+            </div>
+            <div class="skill-category reveal">
+                <h3><i class="fas fa-server"></i> <span data-fr="Outils & Environnement" data-en="Tools & Environment">Outils & Environnement</span></h3>
+                <div class="tags">
+                    <span class="tag">Git / GitHub</span><span class="tag">Linux / Bash</span><span class="tag">Docker</span><span class="tag">Render</span><span class="tag">IntelliJ / VS Code</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TECH BANNER ===== -->
+    <div class="tech-banner reveal">
+        <div class="tech-track">
+            <!-- First set -->
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg" alt="Angular"><span>Angular</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript"><span>TypeScript</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript"><span>JavaScript</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java"><span>Java</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring Boot"><span>Spring Boot</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python"><span>Python</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" alt="C"><span>C</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP"><span>PHP</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL"><span>SQL</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB"><span>MongoDB</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker"><span>Docker</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git"><span>Git</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux"><span>Linux</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5"><span>HTML5</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3"><span>CSS3</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg" alt="ThreeJS"><span>ThreeJS</span></div>
+            <!-- Duplicate for seamless loop -->
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg" alt="Angular"><span>Angular</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript"><span>TypeScript</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript"><span>JavaScript</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java"><span>Java</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring Boot"><span>Spring Boot</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python"><span>Python</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" alt="C"><span>C</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP"><span>PHP</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL"><span>SQL</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB"><span>MongoDB</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker"><span>Docker</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git"><span>Git</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux"><span>Linux</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5"><span>HTML5</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3"><span>CSS3</span></div>
+            <div class="tech-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg" alt="ThreeJS"><span>ThreeJS</span></div>
+        </div>
+    </div>
+
+    <footer id="contact" class="reveal">
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/hafid-el-jaghaoui-1b78a3389/" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/Hafid-06" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="mailto:hafid.eljaghaoui@gmail.com"><i class="fas fa-envelope"></i></a>
+        </div>
+        <p>© 2026 Portfolio by Abdelhafid El Jaghaoui</p>
+    </footer>
+
+    <script>
+        // ===== LANG TOGGLE =====
+        let isEN = false;
+
+        const phrasesFR = ["Abdelhafid El Jaghaoui", "Étudiant en Master 1 Informatique à l'Université Côte d'Azur.", "passionné par le Développement Web.", "curieux des nouvelles technologies.", "un créateur d'expériences numériques."];
+        const phrasesEN = ["Abdelhafid El Jaghaoui", "Master 1 Computer Science student at Université Côte d'Azur.", "passionate about Web Development.", "curious about new technologies.", "a creator of digital experiences."];
+
+        function toggleLang() {
+            isEN = !isEN;
+            const track = document.getElementById('toggle-track');
+            const label = document.getElementById('lang-label');
+
+            track.classList.toggle('active', isEN);
+            label.textContent = isEN ? 'EN' : 'FR';
+
+            // Update all data-fr/data-en elements
+            document.querySelectorAll('[data-fr]').forEach(el => {
+                if (el.tagName === 'A' && el.hasAttribute('data-fr')) {
+                    el.textContent = isEN ? el.getAttribute('data-en') : el.getAttribute('data-fr');
+                } else {
+                    el.textContent = isEN ? el.getAttribute('data-en') : el.getAttribute('data-fr');
+                }
+            });
+
+            // Reset typewriter with new phrases
+            currentPhrases = isEN ? phrasesEN : phrasesFR;
+            pi = 0; ci = 0; isDeleting = false;
+        }
+
+        // ===== REVEAL =====
+        document.addEventListener("DOMContentLoaded", function() {
+            const reveals = document.querySelectorAll(".reveal");
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) { entry.target.classList.add("active"); observer.unobserve(entry.target); }
+                });
+            }, { threshold: 0.15 });
+            reveals.forEach((element) => observer.observe(element));
+
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) navbar.classList.add('scrolled');
+                else navbar.classList.remove('scrolled');
+            });
+
+            type();
+        });
+
+        // ===== TYPEWRITER =====
+        let currentPhrases = phrasesFR;
+        let pi = 0, ci = 0, isDeleting = false;
+        const typewriterElement = document.getElementById('typewriter');
+
+        function type() {
+            const currentPhrase = currentPhrases[pi];
+            typewriterElement.textContent = isDeleting ? currentPhrase.substring(0, ci - 1) : currentPhrase.substring(0, ci + 1);
+            ci = isDeleting ? ci - 1 : ci + 1;
+            if (!isDeleting && ci === currentPhrase.length) { isDeleting = true; setTimeout(type, 2000); }
+            else if (isDeleting && ci === 0) { isDeleting = false; pi = (pi + 1) % currentPhrases.length; setTimeout(type, 400); }
+            else { setTimeout(type, isDeleting ? 60 : 100); }
+        }
+
+        // ===== CV =====
+        function openCV() {
+            document.getElementById('cv-overlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeCV() {
+            document.getElementById('cv-overlay').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // ===== BURGER =====
+        function toggleMenu() {
+            document.getElementById('burger').classList.toggle('open');
+            document.getElementById('nav-links').classList.toggle('open');
+        }
+        function closeMenu() {
+            document.getElementById('burger').classList.remove('open');
+            document.getElementById('nav-links').classList.remove('open');
+        }
+
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeCV(); });
+    </script>
+
+    <!-- Scroll to top button -->
+    <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Retour en haut" style="
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: rgba(56, 189, 248, 0.15);
+        border: 1px solid rgba(56, 189, 248, 0.4);
+        color: #38bdf8;
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s, border-color 0.2s;
+        pointer-events: none;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 0 16px rgba(56,189,248,0.15);
+    ">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        const scrollBtn = document.getElementById('scroll-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollBtn.style.opacity = '1';
+                scrollBtn.style.transform = 'translateY(0)';
+                scrollBtn.style.pointerEvents = 'auto';
+            } else {
+                scrollBtn.style.opacity = '0';
+                scrollBtn.style.transform = 'translateY(20px)';
+                scrollBtn.style.pointerEvents = 'none';
+            }
+        });
+        scrollBtn.addEventListener('mouseover', () => {
+            scrollBtn.style.background = 'rgba(56,189,248,0.25)';
+            scrollBtn.style.borderColor = '#38bdf8';
+            scrollBtn.style.boxShadow = '0 0 24px rgba(56,189,248,0.3)';
+        });
+        scrollBtn.addEventListener('mouseout', () => {
+            scrollBtn.style.background = 'rgba(56,189,248,0.15)';
+            scrollBtn.style.borderColor = 'rgba(56,189,248,0.4)';
+            scrollBtn.style.boxShadow = '0 0 16px rgba(56,189,248,0.15)';
+        });
+    </script>
+</body>
+</html>
